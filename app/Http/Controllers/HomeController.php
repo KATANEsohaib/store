@@ -65,16 +65,33 @@ public function addcart( Request $request , $id){
         
 }
 
+public function removeFromCart(Request $request)
+
+{
+    if($request->id) {
+
+        $cart = session()->get('cart');
+
+        if(isset($cart[$request->id])) {
+
+            unset($cart[$request->id]);
+
+            session()->put('cart', $cart);
+        }
+
+        session()->flash('success', 'Product removed successfully');
+    }
+}
 
 public function showcart(){
    return view('user.showcart');
     
 }
 public function cart($id, $quantity = 1) {
-    $product = Product::find($id);
 
+    $product = Product::find($id);
     if(!$product) {
-        abort(404); // Produit non trouvé, renvoie une erreur 404
+        return response()->json(['message' => 'Produit introuvable.'],422);
     }
 
     $cart = session()->get('cart');
@@ -91,8 +108,10 @@ public function cart($id, $quantity = 1) {
         ];
 
         session()->put('cart', $cart);
+        $cartCount = count(session('cart'));
+        return response()->json(['success' => true, 'message' => 'Produit ajouté au panier avec succès','cartCount' => $cartCount]);
 
-        return redirect()->back()->with('success', 'Produit ajouté au panier avec succès!');
+        //return redirect()->back()->with('success', 'Produit ajouté au panier avec succès!');
     }
 
     if(isset($cart[$id])) {
@@ -107,13 +126,35 @@ public function cart($id, $quantity = 1) {
             "photo" => $product->photo
         ];
     }
-
+    
     session()->put('cart', $cart); // Met à jour le panier dans la session
+    $cartCount = count(session('cart'));
 
-    return redirect()->back()->with('success', 'Produit ajouté au panier avec succès!');
+    return response()->json(['success' => true, 'message' => 'Produit ajouté au panier avec succès', 'cartCount' => $cartCount]);
+
+    //return redirect()->back()->with('success', 'Produit ajouté au panier avec succès!');
+
+}
+
+public function delete($id)
+{
+    // Récupérer les produits de la session
+    $products = session()->get('products', []);
+
+    // Vérifier si le produit avec l'ID correspondant existe dans la session
+    if (array_key_exists($id, $products)) {
+        // Supprimer le produit avec l'ID correspondant
+        unset($products[$id]);
+        // Mettre à jour la session avec les produits restants
+        session()->put('products', $products);
+    }
+
+    // Rediriger vers la page précédente ou une autre page
+    return redirect()->back();
 }
 
 
+/*
 public function destroy($id)
 {
     // Recherche du produit à supprimer dans la base de données
@@ -125,9 +166,10 @@ public function destroy($id)
     // Redirection vers une page (par exemple la page d'accueil) avec un message de succès
     return redirect()->back();
 }
-
+*/
 
 public function confirmorder(Request $request) {
+    //dd('store');
     $user = auth()->user();
     $name = $user->name;
     $phone = $user->phone;

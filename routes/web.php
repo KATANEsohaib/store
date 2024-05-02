@@ -36,16 +36,24 @@ Route::get('/redirect',[HomeController::class,'redirect']);
 Route::get('/',[HomeController::class,'index']);    
 Route::get('/search',[HomeController::class,'search'])->name('search');  
 Route::get('/produits/{id}', [ProductController::class, 'show'])->name('produits.show');
-Route::post('/addcart/{id}', [HomeController::class, 'cart']);
+Route::post('/addcart/{id}', [HomeController::class, 'cart'])->name('produits.add');;
 Route::post('/order', [HomeController::class, 'confirmorder']);
 Route::get('/deletecartproduct/{id}',[HomeController::class,'destroy']);
+Route::delete('/product/{id}', [HomeController::class,'delete'])->name('deleteProduct');
 Route::get('/showcart', [HomeController::class, 'showcart']);
 
 Route::get('/product',[AdminController::class,'product']);
 Route::get('/showproduct',[AdminController::class,'showproduct']);
 Route::get('/deleteproduct/{id}',[ProductController::class,'destroy']);
-Route::post('/updateproduct/{id}',[ProductController::class,'update']);
+Route::put('/updateproduct/{id}', [ProductController::class, 'update'])->name('updateproduct');
+
+
+
+
 Route::get('/updateview/{id}',[ProductController::class,'edit']);
+Route::get('/updatestatus/{id}',[AdminController::class,'updatestatus']);
+Route::delete('/remove-from-cart',[HomeController::class,'removeFromCart'])->name('cart.remove');
+Route::get('/orderlist',[AdminController::class,'showorder']);
 //Route::post('/uploadproduct',[AdminController::class,'uploadproduct']);
 
 Route::post('/product/upload', [ProductController::class, 'store'])->name('ajouter.create');;

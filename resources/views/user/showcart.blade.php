@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <link href="https://fonts.googleapis.com/css?family=Poppins:100,200,300,400,500,600,700,800,900&display=swap" rel="stylesheet">
     <script defer src="https://use.fontawesome.com/releases/v5.15.4/js/all.js" integrity="sha384-rOA1PnstxnOBLzCLMcre8ybwbTmemjzdNlILg8O7z1lUkLXozs4DHonlDtnE7fpc" crossorigin="anonymous"></script>
     
@@ -77,7 +78,9 @@ https://templatemo.com/tm-546-sixteen-clothing
                     <li class="nav-item">
                       <a class="nav-link" href="showcart">
                         <i class="fas fa-shopping-cart"></i>
-                        <span class="badge badge-pill badge-danger">{{ count(session('cart')) }}</span></a>
+                        @if(session('cart') !== null)
+                        <span class="badge badge-pill badge-danger">{{ count(session('cart')) }}</span>
+                    @endif</a>
                     </li>
                       
                        <li> <a href="{{ url('/dashboard') }}" class="nav-link">dashboard
@@ -135,7 +138,10 @@ https://templatemo.com/tm-546-sixteen-clothing
             @php
             $total = 0; // initialiser le total
         @endphp
-             @foreach(session('cart') as $id => $details)
+            @if(session('cart') !== null)
+            @foreach(session('cart') as $id => $details)
+                <!-- Votre code de boucle foreach ici -->
+          
           
             <tr>
                 
@@ -153,9 +159,9 @@ https://templatemo.com/tm-546-sixteen-clothing
                   {{ $details['price'] * $details['quantity'] }}
                 </td>
                 <td>
-                    <!-- this button is to update card -->
-                    <button class="btn btn-info btn-sm update-cart" data-id="{{ $id }}"><i class="fa fa-refresh"></i></button>
-                  <button class="btn btn-danger btn-sm remove-from-cart delete" data-id="{{ $id }}"><i class="fa fa-trash-o"></i>bhh</button>
+                    
+                    
+                  <button type="button" class="btn btn-danger btn-sm remove-from-cart delete" data-id="{{ $id }}"><i class="fa fa-trash-o"></i>annuler</button>
                   
                 </td>
                 
@@ -166,58 +172,15 @@ https://templatemo.com/tm-546-sixteen-clothing
             @endphp
             
             @endforeach
+            @endif
            
-            <button class="btn btn-success"  >Confirme order</button>
+            <button type="submit" class="btn btn-success"  >Confirme order</button>
          </form>
           <h3>Total général : {{ $total }}</h3>
         </tbody>
     </table>
-    @section('scripts')
-
-
-    <script type="text/javascript">
-// this function is for update card
-        $(".update-cart").click(function (e) {
-           e.preventDefault();
-
-           var ele = $(this);
-
-            $.ajax({
-               url: '{{ url('update-cart') }}',
-               method: "patch",
-               data: {_token: '{{ csrf_token() }}', id: ele.attr("data-id"), quantity: ele.parents("tr").find(".quantity").val()},
-               success: function (response) {
-                   window.location.reload();
-               }
-            });
-        });
-
-        $(".remove-from-cart").click(function (e) {
-            e.preventDefault();
-
-            var ele = $(this);
-
-            if(confirm("Are you sure")) {
-                $.ajax({
-                    url: '{{ url('remove-from-cart') }}',
-                    method: "DELETE",
-                    data: {_token: '{{ csrf_token() }}', id: ele.attr("data-id")},
-                    success: function (response) {
-                        window.location.reload();
-                        
-                    }
-                });
-            }
-        });
-
-    </script>
-@endsection
-
     
-    
-
-
-            
+  
             </div>
           </div>
         </div>
@@ -248,7 +211,25 @@ https://templatemo.com/tm-546-sixteen-clothing
           }
       }
     </script>
+<script >
+  $(".remove-from-cart").click(function (e) {
+      e.preventDefault();
+      var ele = $(this);
 
+      if (confirm("Are you sure")) {
+        $.ajax({
+          url: '{{ route('cart.remove') }}', // Vérifiez cette URL
+          method: "DELETE",
+          data: {_token: '{{ csrf_token() }}', id: ele.attr("data-id")},
+          success: function (response) {
+              window.location.reload();
+          }
+      });
+      }
+
+      e.stopPropagation(); // Empêche la propagation de l'événement au formulaire parent
+  });
+</script>
 
   </body>
 

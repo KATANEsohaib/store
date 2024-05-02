@@ -1,5 +1,6 @@
 
 
+
 <div class="latest-products">
     <div class="container">
       <div class="row">
@@ -30,9 +31,9 @@
                       @csrf
 
                       <input type="number" name="quantity" min="1" max="1000" value="1" class="form-control">
-                     <input class="btn btn-primary" type="submit" value="Add to Cart">
+                     
 
-
+                     <button type="button" class="btn btn-primary addtocart"   data-id="{{ $products->id }}">add to card</button>
                     </form>
                     <ul class="stars">
                         <li><i class="fa fa-star"></i></li>
@@ -49,3 +50,36 @@
         </div>
       </div>
     </div>
+  </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script>
+     console.log('data-id')
+      $(document).ready(function() {
+    $(".addtocart").click(function(e) {
+        e.preventDefault();
+       // var ele = $(this);
+        var productId = $(this).data('id');
+        //var quantity = 1; 
+console.log(productId);
+        if (confirm("Ajouter ce produit au panier?")) {
+            $.ajax({
+                url: '/addcart/' + productId, 
+                method: "POST",
+                data: {_token: '{{ csrf_token() }}'},
+                success: function(response) {
+                  
+                    console.log(response);
+                    $("#badge").text(response.cartCount);
+                    
+                },
+                error: function(error) { 
+                    
+                    alert(error.responseJSON.message);
+                }
+            });
+        }
+    });
+});
+
+  </script>

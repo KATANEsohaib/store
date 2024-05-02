@@ -15,10 +15,9 @@
     <div class="container-fluid page-body-wrapper">
         <h1>this is updateproduct page</h1>
 
-        <form action="/updateproduct/{{$product->id}}" method="POST" enctype="multipart/form-data">
-            @csrf
-            @method('PUT') <!-- Utilisez la méthode PUT pour mettre à jour le produit -->
-
+        <form action="{{route ('updateproduct', $product->id)}}" method="POST" enctype="multipart/form-data">
+           @csrf
+         @method('PUT')
             <div class="mb-3">
                 <label for="image" class="form-label">Image</label>
                 <input type="file" class="form-control" id="image" name="image">

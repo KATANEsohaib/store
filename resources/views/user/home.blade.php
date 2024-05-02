@@ -74,7 +74,7 @@ https://templatemo.com/tm-546-sixteen-clothing
                       <a class="nav-link" href="showcart">
                         <i class="fas fa-shopping-cart"></i>
                         @if (session()->has('cart') && is_array(session('cart')))
-                        <span class="badge badge-pill badge-danger">{{ count(session('cart')) }}</span>
+                        <span class="badge badge-pill badge-danger" id="badge">{{ count(session('cart')) }}</span>
                     @endif</span></a>
                     </li>
                       

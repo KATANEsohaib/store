@@ -69,53 +69,52 @@ class ProductController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Product $product)
+    public function edit(Product $product,$id)
     {
         //
        // $product= Product::all();
-       //$product=Product::find($product->id);
-        return view('admin.updateview',compact('product'));
+      $product=Product::find($id);
+     return view('admin.updateview',compact('product'));
+       // dd($product);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Product $product)
+    public function update(Request $request, $id)
     {
-        //
-        $product=Product::find($product->id);
-        
-             
-    {
-        $validatedData=$request->validate([
-            'image'=>'image|required|max:2048',
-            'price'=>'required|max:200',
-            'name'=>'required|max:200',
-            'description'=>'required',
-            
-            
+
+        // Valider les données du formulaire
+        $validatedData = $request->validate([
+            'image' => 'image|max:2048',
+            'price' => 'required|max:200',
+            'name' => 'required|max:200',
+            'description' => 'required',
         ]);
-        $product->name = $validatedData['name'];
-        $product->price = $validatedData['price'];
-        $product->description = $validatedData['description'];
 
-        // Vérifier si une nouvelle image a été téléchargée
-        if ($request->hasFile('image')) {
-            // Supprimer l'ancienne image si elle existe
-            if ($product->image) {
-                Storage::delete('public/'.$product->image);
-            }
-            // Enregistrer la nouvelle image
-            $product->image = $request->file('image')->store('images', 'public');
+        $product = Product::find($id);
+
+        if(!$product) {
+            return redirect('/showproduct')->with('error', 'Product not found.');
         }
-
+    
+        // Mettre à jour les propriétés du produit avec les données validées
+        $product->update($validatedData);
+    
+        // Vérifier si une nouvelle image a été téléchargée
+        if ($product->image) {
+            Storage::delete('public/' . $product->image);
+        }
+        // Enregistrer la nouvelle image
+        $product->image = $request->file('image')->store('images', 'public');
+    
+    
         // Sauvegarder les modifications dans la base de données
-        $product->save();
-        dd($request->all());
         // Rediriger avec un message de succès
-        return redirect()->back();
-    }}
-
+        return redirect('/showproduct')->with('success', 'Product updated successfully.');
+    }
+    
+    
     /**
      * Remove the specified resource from storage.
      */
