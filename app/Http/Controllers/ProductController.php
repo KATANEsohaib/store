@@ -102,12 +102,16 @@ class ProductController extends Controller
         $product->update($validatedData);
     
         // Vérifier si une nouvelle image a été téléchargée
-        if ($product->image) {
-            Storage::delete('public/' . $product->image);
+        if ($request->hasFile('image')) {
+            // Supprimer l'ancienne image si elle existe
+            if ($product->image) {
+                Storage::delete('public/' . $product->image);
+            }
+            // Enregistrer la nouvelle image
+            $product->image = $request->file('image')->store('images', 'public');
         }
-        // Enregistrer la nouvelle image
-        $product->image = $request->file('image')->store('images', 'public');
-    
+        $product->save();
+    //dd($product->image);
     
         // Sauvegarder les modifications dans la base de données
         // Rediriger avec un message de succès

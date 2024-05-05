@@ -101,13 +101,13 @@ public function cart($id, $quantity = 1) {
         $cart = [
             $id => [
                 "name" => $product->name,
-                "quantity" => $quantity, // Utilise la quantité passée en paramètre
+                "quantity" =>$product-> $quantity, // Utilise la quantité passée en paramètre
                 "price" => $product->price,
                 "photo" => $product->photo
             ]
         ];
 
-        session()->put('cart', $cart);
+        session()->put('cart', $cart); // Met à jour le panier dans la session
         $cartCount = count(session('cart'));
         return response()->json(['success' => true, 'message' => 'Produit ajouté au panier avec succès','cartCount' => $cartCount]);
 
@@ -121,7 +121,7 @@ public function cart($id, $quantity = 1) {
         // Si le produit n'est pas dans le panier, ajoutez-le
         $cart[$id] = [
             "name" => $product->name,
-            "quantity" => $quantity, // Utilise la quantité passée en paramètre
+            "quantity" => $product->$quantity, // Utilise la quantité passée en paramètre
             "price" => $product->price,
             "photo" => $product->photo
         ];

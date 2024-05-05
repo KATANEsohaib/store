@@ -15,7 +15,7 @@
     <div class="container-fluid page-body-wrapper">
         <h1>this is product page</h1>
 
-        <form action="{{ route('ajouter.create') }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('comment.create') }}" method="POST" enctype="multipart/form-data">
             @csrf
             <div class="mb-3">
                 <label for="image" class="form-label">Image</label>

@@ -4,6 +4,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ProductController;
 
 /*
@@ -48,12 +49,22 @@ Route::get('/deleteproduct/{id}',[ProductController::class,'destroy']);
 Route::put('/updateproduct/{id}', [ProductController::class, 'update'])->name('updateproduct');
 
 
-
+Route::get('/contact', function () {
+    return view('user.Contact');
+});
+Route::get('/ourproduct', function () {
+    return view('user.showproducts');
+});
+Route::get('/about', function () {
+    return view('user.about');
+});
+Route::post('/contact', [CommentController::class, 'store'])->name('contact.store');
 
 Route::get('/updateview/{id}',[ProductController::class,'edit']);
 Route::get('/updatestatus/{id}',[AdminController::class,'updatestatus']);
 Route::delete('/remove-from-cart',[HomeController::class,'removeFromCart'])->name('cart.remove');
 Route::get('/orderlist',[AdminController::class,'showorder']);
+Route::get('/showcomment',[CommentController::class,'index']);
 //Route::post('/uploadproduct',[AdminController::class,'uploadproduct']);
 
 Route::post('/product/upload', [ProductController::class, 'store'])->name('ajouter.create');;
